@@ -1,27 +1,36 @@
 ---
-// 製品カタログの一覧。D1から読み出すのでオンデマンドレンダリングにする
+// 製品カタログの一覧。D1とKVを読むのでオンデマンドレンダリングにする
 export const prerender = false;
 
 import Layout from "../../layouts/Layout.astro";
-import { listProducts } from "../../lib/catalog";
+import { getCatalog } from "../../lib/catalog";
 
-const products = await listProducts();
+// KVにキャッシュがあればKVから、なければD1から組み立ててKVに入れる
+const { items, source } = await getCatalog();
 ---
 
 <Layout title="製品カタログ">
 	<h1>製品カタログ</h1>
 
-	<p class="muted">D1（env.DB）から読み出しています。</p>
+	<p class="muted">
+		このページのデータは<strong>{source}</strong>から読み出しました。リロードすると2回目以降はKVになります。
+	</p>
 
 	<ul class="products">
 		{
-			products.map((product) => (
+			items.map((item) => (
 				<li>
-					<a href={`/products/${product.id}/`}>{product.name}</a>
+					<a href={`/products/${item.id}/`}>{item.name}</a>
 					<p class="muted">
-						{product.category} ／ <span class="price">{product.price.toLocaleString("ja-JP")}円</span>
+						{item.category} ／ <span class="price">{item.priceLabel}</span>
+						{item.averageRating !== null && (
+							<span>
+								{" "}
+								／ ★{item.averageRating.toFixed(1)}（{item.reviewCount}件）
+							</span>
+						)}
 					</p>
-					<p>{product.description}</p>
+					<p>{item.description}</p>
 				</li>
 			))
 		}
