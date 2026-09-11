@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
-	"name": "2026-workers-hosting-bindings",
+	"name": "2026-workers-hosting-bindings-dev", // 環境を指定しないときはこちら＝開発用
 	"main": "@astrojs/cloudflare/entrypoints/server", // アダプターが提供するエントリーポイント
 	"compatibility_date": "2026-09-10",
 	"compatibility_flags": ["global_fetch_strictly_public"],
@@ -14,11 +14,14 @@
 		"head_sampling_rate": 1, // 1 = 100%のリクエストを記録
 	},
 
+	// ここから下は開発用のバインディング。ローカルの開発サーバーもこの設定で動く。
+	// 本番用は下の "env.prod" に書く（バインディングは環境に継承されないため、両方に書く）。
+
 	// D1：製品とレビューのマスタ。コードからは env.DB で参照する
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "codegrid-demo",
+			"database_name": "codegrid-demo-dev",
 			"database_id": "00000000-0000-0000-0000-000000000000", // 自分のアカウントで作成したIDに置き換える
 		},
 	],
@@ -35,7 +38,7 @@
 	"analytics_engine_datasets": [
 		{
 			"binding": "ANALYTICS",
-			"dataset": "catalog_views",
+			"dataset": "catalog_views_dev",
 		},
 	],
 
@@ -43,8 +46,42 @@
 	"services": [
 		{
 			"binding": "REVIEW_PROCESSOR",
-			"service": "review-processor", // workers/review-processor の name
+			"service": "review-processor-dev", // workers/review-processor の name
 			"entrypoint": "ReviewProcessor", // 呼び出すWorkerEntrypointクラス
 		},
 	],
+
+	// 本番用の環境。ビルド時に CLOUDFLARE_ENV=prod を指定したときだけ使われる。
+	// 何も指定しなければ開発用になるので、うっかり本番に向けてしまうことがない。
+	"env": {
+		"prod": {
+			"name": "2026-workers-hosting-bindings",
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "codegrid-demo",
+					"database_id": "00000000-0000-0000-0000-000000000000",
+				},
+			],
+			"kv_namespaces": [
+				{
+					"binding": "CATALOG",
+					"id": "00000000000000000000000000000000",
+				},
+			],
+			"analytics_engine_datasets": [
+				{
+					"binding": "ANALYTICS",
+					"dataset": "catalog_views",
+				},
+			],
+			"services": [
+				{
+					"binding": "REVIEW_PROCESSOR",
+					"service": "review-processor",
+					"entrypoint": "ReviewProcessor",
+				},
+			],
+		},
+	},
 }

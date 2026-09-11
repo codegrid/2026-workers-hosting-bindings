@@ -11,8 +11,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "generate-types": "wrangler types",
-    "db:migrate": "wrangler d1 migrations apply codegrid-demo --local",
-    "db:migrate:remote": "wrangler d1 migrations apply codegrid-demo --remote"
+    "db:migrate": "wrangler d1 migrations apply codegrid-demo-dev --local",
+    "db:migrate:dev": "wrangler d1 migrations apply codegrid-demo-dev --remote",
+    "db:migrate:prod": "wrangler d1 migrations apply codegrid-demo --remote",
+    "deploy": "astro build && wrangler deploy -c workers/review-processor/wrangler.jsonc && wrangler deploy",
+    "deploy:prod": "CLOUDFLARE_ENV=prod astro build && wrangler deploy -c workers/review-processor/wrangler.jsonc --env prod && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",
