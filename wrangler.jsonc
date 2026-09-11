@@ -8,8 +8,10 @@
 		"directory": "./dist", // 静的に配信するディレクトリ
 		"binding": "ASSETS",
 	},
+	// ログを記録する。デプロイ時にこの内容でダッシュボードの設定が上書きされる
 	"observability": {
 		"enabled": true,
+		"head_sampling_rate": 1, // 1 = 100%のリクエストを記録
 	},
 
 	// D1：製品とレビューのマスタ。コードからは env.DB で参照する

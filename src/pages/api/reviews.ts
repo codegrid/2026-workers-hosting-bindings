@@ -25,10 +25,14 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 	}
 
 	if (await reviewProcessor.isSpam(body)) {
+		// ダッシュボードのログで絞り込めるように、オブジェクトで出力しておく
+		console.log({ event: "review_rejected", reason: "spam", productId });
 		return redirect(`/products/${productId}/?error=spam`, 303);
 	}
 
 	await addReview({ productId, rating, body });
+
+	console.log({ event: "review_posted", productId, rating });
 
 	return redirect(`/products/${productId}/?posted=1`, 303);
 };
