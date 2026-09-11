@@ -3,6 +3,7 @@
 export const prerender = false;
 
 import Layout from "../../layouts/Layout.astro";
+import { recordProductView } from "../../lib/analytics";
 import { getProduct, listReviews } from "../../lib/catalog";
 
 const { id } = Astro.params;
@@ -17,6 +18,13 @@ const average =
 	reviews.length === 0
 		? null
 		: reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+
+// どの製品がどの国から見られたかを記録する。レスポンスは待たない
+recordProductView({
+	productId: product.id,
+	category: product.category,
+	country: (Astro.request.cf?.country as string | undefined) ?? "unknown",
+});
 
 const posted = Astro.url.searchParams.has("posted");
 const invalid = Astro.url.searchParams.get("error") === "invalid";

@@ -29,6 +29,14 @@
 		},
 	],
 
+	// Analytics Engine：製品ページの閲覧を記録する。コードからは env.ANALYTICS で参照する
+	"analytics_engine_datasets": [
+		{
+			"binding": "ANALYTICS",
+			"dataset": "catalog_views",
+		},
+	],
+
 	// 別のWorker：レビュー本文の下ごしらえ。RPCで関数のように呼び出す
 	"services": [
 		{
