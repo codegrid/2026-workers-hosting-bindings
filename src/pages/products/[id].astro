@@ -1,0 +1,72 @@
+---
+// 製品の詳細ページ。製品とレビューをD1から読み出す
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+import { getProduct, listReviews } from "../../lib/catalog";
+
+const { id } = Astro.params;
+const product = id ? await getProduct(id) : null;
+
+if (!product) {
+	return new Response(null, { status: 404 });
+}
+
+const reviews = await listReviews(product.id);
+const average =
+	reviews.length === 0
+		? null
+		: reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+---
+
+<Layout title={product.name}>
+	<h1>{product.name}</h1>
+
+	<p class="muted">
+		{product.category} ／ <span class="price">{product.price.toLocaleString("ja-JP")}円</span>
+	</p>
+
+	<p>{product.description}</p>
+
+	<h2>レビュー（{reviews.length}件）</h2>
+
+	{average !== null && <p class="muted">平均評価：★{average.toFixed(1)}</p>}
+
+	{reviews.length === 0 && <p class="muted">まだレビューはありません。</p>}
+
+	<ul class="reviews">
+		{
+			reviews.map((review) => (
+				<li>
+					<p class="rating">{"★".repeat(review.rating)}</p>
+					<p>{review.body}</p>
+					<p class="muted">{review.created_at}</p>
+				</li>
+			))
+		}
+	</ul>
+
+	<p><a href="/products/">← 製品カタログに戻る</a></p>
+</Layout>
+
+<style>
+	.reviews {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.reviews li {
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.reviews li p {
+		margin: 0;
+	}
+
+	.rating {
+		color: var(--accent);
+		letter-spacing: 0.1em;
+	}
+</style>

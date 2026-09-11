@@ -1,17 +1,27 @@
 ---
-
+// 会社概要ページ。データベースを触らないので静的に生成される（デフォルト）
+import Layout from "../layouts/Layout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="会社概要">
+	<h1>CG文具</h1>
+
+	<p>
+		ノートとペンと、机まわりの小物をつくっている架空の文具メーカーです。このサイトはCloudflare
+		Workers上で動いていて、製品カタログとレビューはD1、表示用のカタログデータはKVに置いています。
+	</p>
+
+	<h2>このサイトの構成</h2>
+
+	<ul>
+		<li>会社概要（このページ）……静的なページ。ビルド時にHTMLとして出力される</li>
+		<li>
+			<a href="/products/">製品カタログ</a
+			>……リクエストのたびにWorkers上でレンダリングされるページ
+		</li>
+	</ul>
+
+	<h2>所在地</h2>
+
+	<p class="muted">架空の会社のため、所在地はありません。</p>
+</Layout>

@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "db:migrate": "wrangler d1 migrations apply codegrid-demo --local",
+    "db:migrate:remote": "wrangler d1 migrations apply codegrid-demo --remote"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.1",

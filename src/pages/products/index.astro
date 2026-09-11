@@ -1,0 +1,50 @@
+---
+// 製品カタログの一覧。D1から読み出すのでオンデマンドレンダリングにする
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+import { listProducts } from "../../lib/catalog";
+
+const products = await listProducts();
+---
+
+<Layout title="製品カタログ">
+	<h1>製品カタログ</h1>
+
+	<p class="muted">D1（env.DB）から読み出しています。</p>
+
+	<ul class="products">
+		{
+			products.map((product) => (
+				<li>
+					<a href={`/products/${product.id}/`}>{product.name}</a>
+					<p class="muted">
+						{product.category} ／ <span class="price">{product.price.toLocaleString("ja-JP")}円</span>
+					</p>
+					<p>{product.description}</p>
+				</li>
+			))
+		}
+	</ul>
+</Layout>
+
+<style>
+	.products {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.products li {
+		padding: 1.2rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.products li p {
+		margin: 0.2rem 0 0;
+	}
+
+	.products a {
+		font-weight: 700;
+	}
+</style>
