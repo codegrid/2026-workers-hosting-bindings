@@ -28,4 +28,13 @@
 			"id": "00000000000000000000000000000000", // 自分のアカウントで作成したIDに置き換える
 		},
 	],
+
+	// 別のWorker：レビュー本文の下ごしらえ。RPCで関数のように呼び出す
+	"services": [
+		{
+			"binding": "REVIEW_PROCESSOR",
+			"service": "review-processor", // workers/review-processor の name
+			"entrypoint": "ReviewProcessor", // 呼び出すWorkerEntrypointクラス
+		},
+	],
 }

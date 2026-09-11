@@ -20,6 +20,7 @@ const average =
 
 const posted = Astro.url.searchParams.has("posted");
 const invalid = Astro.url.searchParams.get("error") === "invalid";
+const spam = Astro.url.searchParams.get("error") === "spam";
 ---
 
 <Layout title={product.name}>
@@ -53,6 +54,7 @@ const invalid = Astro.url.searchParams.get("error") === "invalid";
 
 	{posted && <p class="notice">レビューを投稿しました。</p>}
 	{invalid && <p class="notice">評価と本文を入力してください。</p>}
+	{spam && <p class="notice">宣伝のような内容は投稿できません。</p>}
 
 	<form method="post" action="/api/reviews">
 		<input type="hidden" name="product_id" value={product.id} />
