@@ -17,6 +17,9 @@ const average =
 	reviews.length === 0
 		? null
 		: reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+
+const posted = Astro.url.searchParams.has("posted");
+const invalid = Astro.url.searchParams.get("error") === "invalid";
 ---
 
 <Layout title={product.name}>
@@ -46,6 +49,29 @@ const average =
 		}
 	</ul>
 
+	<h2>レビューを書く</h2>
+
+	{posted && <p class="notice">レビューを投稿しました。</p>}
+	{invalid && <p class="notice">評価と本文を入力してください。</p>}
+
+	<form method="post" action="/api/reviews">
+		<input type="hidden" name="product_id" value={product.id} />
+
+		<label>
+			評価
+			<select name="rating">
+				{[5, 4, 3, 2, 1].map((value) => <option value={value}>{"★".repeat(value)}</option>)}
+			</select>
+		</label>
+
+		<label>
+			本文
+			<textarea name="body" rows="3" placeholder="使ってみた感想をどうぞ"></textarea>
+		</label>
+
+		<button type="submit">投稿する</button>
+	</form>
+
 	<p><a href="/products/">← 製品カタログに戻る</a></p>
 </Layout>
 
@@ -68,5 +94,44 @@ const average =
 	.rating {
 		color: var(--accent);
 		letter-spacing: 0.1em;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 0.8rem;
+		align-items: flex-start;
+		max-width: 28rem;
+	}
+
+	label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		width: 100%;
+		font-size: 0.9rem;
+	}
+
+	select,
+	textarea,
+	button {
+		font: inherit;
+		padding: 0.4rem 0.6rem;
+		border: 1px solid var(--line);
+		border-radius: 4px;
+		background: transparent;
+		color: inherit;
+	}
+
+	button {
+		cursor: pointer;
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.notice {
+		padding: 0.6rem 0.8rem;
+		border-left: 3px solid var(--accent);
+		background: color-mix(in srgb, var(--accent) 8%, transparent);
 	}
 </style>

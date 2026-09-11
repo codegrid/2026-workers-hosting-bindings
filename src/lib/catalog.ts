@@ -98,3 +98,16 @@ export async function getCatalog(): Promise<{ items: CatalogItem[]; source: "KV"
 export async function invalidateCatalog(): Promise<void> {
 	await env.CATALOG.delete(CATALOG_KEY);
 }
+
+// レビューをD1に書き込み、一覧用のキャッシュを無効化する
+export async function addReview(input: {
+	productId: string;
+	rating: number;
+	body: string;
+}): Promise<void> {
+	await env.DB.prepare("INSERT INTO reviews (product_id, rating, body) VALUES (?1, ?2, ?3)")
+		.bind(input.productId, input.rating, input.body)
+		.run();
+
+	await invalidateCatalog();
+}
